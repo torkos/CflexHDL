@@ -1,12 +1,20 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 """
 Parser/Generator to convert C files to Silice files (.ice)
 (C) 2022 Victor Suarez Rovere <suarezvictor@gmail.com>
 
 """
-
+import os
 import sys
-sys.path.append("../../cflexparser")
+
+sys.path.append(os.path.dirname(__file__)+"/../cflexparser")
+from clang.cindex import Config
+CLANG_LIBRARY_PATH="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib"
+if 'CLANG_LIBRARY_PATH' in os.environ:
+    Config.set_library_path(os.environ['CLANG_LIBRARY_PATH'])
+else:
+    Config.set_library_path(CLANG_LIBRARY_PATH)
+    Config.set_library_file(CLANG_LIBRARY_PATH)
 
 from clangparser import CFlexClangParser, CFlexBasicCPPGenerator, concat_tokens, mangle_type, remove_type_qualifiers
 from clang.cindex import TypeKind
@@ -286,4 +294,5 @@ if __name__ == "__main__":
     parser.print_diagnostics()
     generated = parser.generate(CFlexSiliceGenerator())
     print(generated)
+    pass
 

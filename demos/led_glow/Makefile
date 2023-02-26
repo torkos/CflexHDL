@@ -25,6 +25,8 @@ de0nano: $(BUILD)/top.rbf
 
 arty: $(BUILD)/top.bit
 
+ulx3s: $(BUILD)/top_ulx.bit
+
 $(BUILD)/top_instance.v: led_glow.cc $(PARSER)
 	rm -Rf build
 	mkdir -p $(BUILD)
@@ -38,6 +40,10 @@ $(BUILD)/top.rbf: $(BUILD)/top_instance.v soc.py
 
 $(BUILD)/top.bit: $(BUILD)/top_instance.v soc.py
 	time python3 soc.py $(BUILD)/top_instance.v litex_boards.platforms.digilent_arty $(XILINXTOOLCHAIN)
+	@echo openFPGALoader -b $(BOARD) $@ > $(BUILD)/load.sh
+
+$(BUILD)/top_ulx.bit: $(BUILD)/top_instance.v soc.py
+	time python3 soc.py $(BUILD)/top_instance.v litex_boards.platforms.radiona_ulx3s
 	@echo openFPGALoader -b $(BOARD) $@ > $(BUILD)/load.sh
 
 load: bitstream
